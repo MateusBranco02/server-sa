@@ -1,7 +1,7 @@
 import conexao from '../database.js';
 import { DataTypes } from 'sequelize';
 
-const Epi = conexao.define('Epi', {
+const Funcionario = conexao.define('Funcionarios', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -12,15 +12,23 @@ const Epi = conexao.define('Epi', {
         type: DataTypes.STRING,
     },
 
-    quantidade: {
+    funcao: {
+        type: DataTypes.STRING,
+    },
+
+    telefone: {
         type: DataTypes.INTEGER,
     },
 
-    imagem: {
+    email: {
         type: DataTypes.STRING,
+    },
+
+    cpf: {
+        type: DataTypes.INTEGER,
     }
 }, {
-    tableName: 'epis'
+    tableName: 'funcionarios'
 });
 
-export { Epi };
+export { Funcionario };
