@@ -1,4 +1,6 @@
-import { Epi } from "../model/Epi.js";
+import { Epi } from '../model/Epi.js';
+import { Funcionario } from '../model/Funcionario.js';
+import { Historico } from '../model/Historico.js';
 
 const mostrarEpis = async (req, res) => {
     try {
@@ -23,8 +25,8 @@ const cadastrarEpi = async (req, res) => {
 
 const editarEpi = async (req, res) => {
     try {
-        const id = req.params.id
-        const { nome, quantidade, imagem } = req.body
+        const id = Number(req.params.id);
+        const { nome, quantidade, imagem } = req.body;
         const response = await Epi.update({ nome, quantidade, imagem }, { where: { id } });
         res.status(200).send({ mensagem: 'Dados alterados com sucesso!' });
     } catch (error) {
@@ -37,11 +39,36 @@ const removerEpi = async (req, res) => {
     try {
         const response = await Epi.findByPk(req.params.id);
         await response.destroy();
-        res.status(200).send({ mensagem: 'Deletado com sucesso!' });
+        res.status(200).send({ mensagem: 'Epi deletado com sucesso!' });
     } catch (error) {
         console.log(error)
         res.status(500).send({ mensagem: 'Erro ao remover!' });
     }
 }
 
-export { mostrarEpis, cadastrarEpi, editarEpi, removerEpi };
+const retirarEpi = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const { nome, quantidade } = req.body;
+
+        const verificarNomeFuncionario = await Funcionario.findOne({ where: { nome: nome } });
+
+        const pegarIdEpi = await Epi.findByPk(id);
+
+        const atualizarQuantidadeEpi = await pegarIdEpi.update({ quantidade: pegarIdEpi.quantidade - quantidade });
+
+        const response = await Historico.create({
+            idFuncionario: verificarNomeFuncionario.id,
+            idEpi: pegarIdEpi.id,
+            idStatus: 1
+        });
+
+        res.status(201).send({ resultado: response });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ mensagem: 'Erro ao tentar retirar o EPI!' });
+    }
+}
+
+export { mostrarEpis, cadastrarEpi, editarEpi, removerEpi, retirarEpi };

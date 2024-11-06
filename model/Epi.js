@@ -10,14 +10,18 @@ const Epi = conexao.define('Epi', {
 
     nome: {
         type: DataTypes.STRING,
+        allowNull: false
     },
 
     quantidade: {
         type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
     },
 
     imagem: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
+        allowNull: false
     }
 }, {
     tableName: 'epis'

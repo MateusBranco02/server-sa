@@ -12,7 +12,7 @@ const mostrarFuncionarios = async (req, res) => {
 
 const cadastrarFuncionario = async (req, res) => {
     try {
-        const { nome, funcao, telefone, email, cpf } = req.body
+        const { nome, funcao, telefone, email, cpf } = req.body;
         const response = await Funcionario.create({ nome, funcao, telefone, email, cpf });
         res.status(201).send({ resposta: response });
     } catch (error) {
@@ -23,7 +23,7 @@ const cadastrarFuncionario = async (req, res) => {
 
 const editarFuncionario = async (req, res) => {
     try {
-        const id = req.params.id
+        const id = Number(req.params.id);
         const { nome, funcao, telefone, email, cpf } = req.body
         const response = await Funcionario.update({ nome, funcao, telefone, email, cpf }, { where: { id } });
         res.status(200).send({ mensagem: 'Dados alterados com sucesso!' });
