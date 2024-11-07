@@ -24,4 +24,8 @@ Status.hasMany(Historico, {
     foreignKey: 'idStatus'
 });
 
+Historico.belongsTo(Status, {
+    foreignKey: 'idStatus'
+});
+
 export { Status };

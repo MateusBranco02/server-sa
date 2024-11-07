@@ -55,4 +55,9 @@ Epi.belongsToMany(Funcionario, {
     foreignKey: 'idEpi'
 });
 
+Funcionario.hasMany(Historico, { foreignKey: 'idFuncionario' });
+Historico.belongsTo(Funcionario, { foreignKey: 'idFuncionario' });
+Epi.hasMany(Historico, { foreignKey: 'idEpi' });
+Historico.belongsTo(Epi, { foreignKey: 'idEpi' });
+
 export { Funcionario };

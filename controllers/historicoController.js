@@ -1,8 +1,27 @@
+import { Epi } from '../model/Epi.js';
+import { Funcionario } from '../model/Funcionario.js';
 import { Historico } from '../model/Historico.js';
+import { Status } from '../model/Status.js';
 
 const historico = async (req, res) => {
     try {
-        const response = await Historico.findAll();
+        const response = await Historico.findAll({
+            include: [
+                {
+                    model: Epi,
+                    attributes: ['nome']
+                },
+                {
+                    model: Funcionario,
+                    attributes: ['nome']
+                },
+                {
+                    model: Status,
+                    attributes: ['status']
+                }
+            ],
+            attributes: ['createdAt', 'updatedAt']
+        });
         res.status(200).send({ resultado: response });
     } catch (error) {
         console.log(error);
