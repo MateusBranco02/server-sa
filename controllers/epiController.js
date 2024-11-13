@@ -1,10 +1,8 @@
-import { Epi } from '../model/Epi.js';
-import { Funcionario } from '../model/Funcionario.js';
-import { Historico } from '../model/Historico.js';
+import { Funcionario, Epi, Historico, Status } from '../model/relacionamentoTabelas.js';
 
 const mostrarEpis = async (req, res) => {
     try {
-        const response = await Epi.findAll({ attributes: ['nome'] });
+        const response = await Epi.findAll({ attributes: ['id', 'nome', 'quantidade', 'imagem'] });
         res.status(200).send({ resultado: response });
     } catch (error) {
         console.log(error);
@@ -55,7 +53,7 @@ const retirarEpi = async (req, res) => {
 
         const pegarIdEpi = await Epi.findByPk(id);
 
-        const atualizarQuantidadeEpi = await pegarIdEpi.update({ quantidade: pegarIdEpi.quantidade - quantidade });
+        const atualizarQuantidadeEpi = await pegarIdEpi.update({ quantidade: Number(pegarIdEpi.quantidade) - Number(quantidade) });
 
         const response = await Historico.create({
             idFuncionario: verificarNomeFuncionario.id,
@@ -71,4 +69,30 @@ const retirarEpi = async (req, res) => {
     }
 }
 
-export { mostrarEpis, cadastrarEpi, editarEpi, removerEpi, retirarEpi };
+const devolverEpi = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const { nome, quantidade } = req.body;
+
+        const verificarNomeFuncionario = await Funcionario.findOne({ where: { nome: nome } });
+
+        const pegarIdEpi = await Epi.findByPk(id);
+
+        const verificarSePossuiEpiRetirado = await Historico.findOne({ where: { idFuncionario: verificarNomeFuncionario.id, idEpi: pegarIdEpi.id, idStatus: 1 } });
+
+        const atualizarQuantidadeEpi = await pegarIdEpi.update({ quantidade: Number(pegarIdEpi.quantidade) + Number(quantidade) });
+
+        const response = await Historico.create({
+            idFuncionario: verificarNomeFuncionario.id,
+            idEpi: pegarIdEpi.id,
+            idStatus: 2
+        });
+
+        res.status(201).send({ resultado: response });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ mensagem: 'Erro ao tentar devolver o EPI!' });
+    }
+}
+
+export { mostrarEpis, cadastrarEpi, editarEpi, removerEpi, retirarEpi, devolverEpi };

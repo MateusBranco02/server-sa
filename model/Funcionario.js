@@ -1,7 +1,5 @@
 import conexao from '../database.js';
 import { DataTypes } from 'sequelize';
-import { Epi } from './Epi.js';
-import { Historico } from './Historico.js';
 
 const Funcionario = conexao.define('Funcionario', {
     id: {
@@ -36,28 +34,5 @@ const Funcionario = conexao.define('Funcionario', {
 }, {
     tableName: 'funcionarios'
 });
-
-Funcionario.hasMany(Epi, {
-    foreignKey: 'idFuncionario'
-});
-
-Funcionario.belongsToMany(Epi, {
-    through: {
-        model: Historico
-    },
-    foreignKey: 'idFuncionario'
-});
-
-Epi.belongsToMany(Funcionario, {
-    through: {
-        model: Historico
-    },
-    foreignKey: 'idEpi'
-});
-
-Funcionario.hasMany(Historico, { foreignKey: 'idFuncionario' });
-Historico.belongsTo(Funcionario, { foreignKey: 'idFuncionario' });
-Epi.hasMany(Historico, { foreignKey: 'idEpi' });
-Historico.belongsTo(Epi, { foreignKey: 'idEpi' });
 
 export { Funcionario };
