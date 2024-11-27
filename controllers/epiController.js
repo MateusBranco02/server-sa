@@ -58,7 +58,8 @@ const retirarEpi = async (req, res) => {
         const response = await Historico.create({
             idFuncionario: verificarNomeFuncionario.id,
             idEpi: pegarIdEpi.id,
-            idStatus: 1
+            idStatus: 1,
+            quantidade
         });
 
         res.status(201).send({ resultado: response });
@@ -75,17 +76,38 @@ const devolverEpi = async (req, res) => {
         const { nome, quantidade } = req.body;
 
         const verificarNomeFuncionario = await Funcionario.findOne({ where: { nome: nome } });
+        if (!verificarNomeFuncionario) {
+            return res.status(404).send({ mensagem: 'Funcionário não encontrado!' });
+        }
 
         const pegarIdEpi = await Epi.findByPk(id);
+        if (!pegarIdEpi) {
+            return res.status(404).send({ mensagem: 'EPI não encontrado!' });
+        }
 
-        const verificarSePossuiEpiRetirado = await Historico.findOne({ where: { idFuncionario: verificarNomeFuncionario.id, idEpi: pegarIdEpi.id, idStatus: 1 } });
+        const totalRetirado = await Historico.sum('quantidade', { where: { idFuncionario: verificarNomeFuncionario.id, idEpi: pegarIdEpi.id, idStatus: 1 } });
+
+        const totalDevolvido = await Historico.sum('quantidade', { where: { idFuncionario: verificarNomeFuncionario.id, idEpi: pegarIdEpi.id, idStatus: 2 } });
+
+        const disponivelParaDevolucao = totalRetirado - totalDevolvido;
+
+        if (disponivelParaDevolucao <= 0) {
+            return res.status(400).send({ mensagem: 'Não há EPIs pendentes de devolução!' });
+        }
+
+        if (quantidade > disponivelParaDevolucao) {
+            return res.status(400).send({
+                mensagem: `Quantidade devolvida excede o que foi retirado! Você só pode devolver até ${quantidadeDisponivelParaDevolucao} unidade(s).`
+            });
+        }
 
         const atualizarQuantidadeEpi = await pegarIdEpi.update({ quantidade: Number(pegarIdEpi.quantidade) + Number(quantidade) });
 
         const response = await Historico.create({
             idFuncionario: verificarNomeFuncionario.id,
             idEpi: pegarIdEpi.id,
-            idStatus: 2
+            idStatus: 2,
+            quantidade
         });
 
         res.status(201).send({ resultado: response });

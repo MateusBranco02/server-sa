@@ -20,7 +20,7 @@ const historico = async (req, res) => {
                     attributes: ['status']
                 }
             ],
-            attributes: ['createdAt', 'updatedAt']
+            attributes: ['quantidade', 'createdAt', 'updatedAt']
         });
         res.status(200).send({ resultado: response });
     } catch (error) {
