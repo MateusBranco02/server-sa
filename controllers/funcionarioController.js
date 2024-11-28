@@ -2,7 +2,7 @@ import { Funcionario } from '../model/Funcionario.js';
 
 const mostrarFuncionarios = async (req, res) => {
     try {
-        const response = await Funcionario.findAll({ attributes: ['nome'] });
+        const response = await Funcionario.findAll();
         res.status(200).send({ resultado: response });
     } catch (error) {
         console.log(error);
