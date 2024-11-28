@@ -1,7 +1,4 @@
-import { Epi } from '../model/Epi.js';
-import { Funcionario } from '../model/Funcionario.js';
-import { Historico } from '../model/Historico.js';
-import { Status } from '../model/Status.js';
+import { Funcionario, Epi, Historico, Status } from '../model/relacionamentoTabelas.js';
 
 const historico = async (req, res) => {
     try {

@@ -14,7 +14,7 @@ const cadastrarEpi = async (req, res) => {
     try {
         const { nome, quantidade, imagem } = req.body
         const response = await Epi.create({ nome, quantidade, imagem });
-        res.status(201).send({ resposta: response });
+        res.status(201).send({ resultado: response });
     } catch (error) {
         console.log(error);
         res.status(500).send({ mensagem: 'Erro ao cadastrar!' });
@@ -40,7 +40,7 @@ const removerEpi = async (req, res) => {
         res.status(200).send({ mensagem: 'Epi deletado com sucesso!' });
     } catch (error) {
         console.log(error)
-        res.status(500).send({ mensagem: 'Erro ao remover!' });
+        res.status(500).send({ mensagem: 'Erro Interno!' });
     }
 }
 
@@ -63,7 +63,6 @@ const retirarEpi = async (req, res) => {
         });
 
         res.status(201).send({ resultado: response });
-
     } catch (error) {
         console.log(error);
         res.status(500).send({ mensagem: 'Erro ao tentar retirar o EPI!' });
@@ -92,13 +91,11 @@ const devolverEpi = async (req, res) => {
         const disponivelParaDevolucao = totalRetirado - totalDevolvido;
 
         if (disponivelParaDevolucao <= 0) {
-            return res.status(400).send({ mensagem: 'Não há EPIs pendentes de devolução!' });
+            return res.status(400).send({ mensagem: 'Não há EPI(s) pendentes de devolução!' });
         }
 
         if (quantidade > disponivelParaDevolucao) {
-            return res.status(400).send({
-                mensagem: `Quantidade devolvida excede o que foi retirado! Você só pode devolver até ${quantidadeDisponivelParaDevolucao} unidade(s).`
-            });
+            return res.status(400).send({ mensagem: 'Quantidade devolvida excede o que foi retirado!' });
         }
 
         const atualizarQuantidadeEpi = await pegarIdEpi.update({ quantidade: Number(pegarIdEpi.quantidade) + Number(quantidade) });

@@ -6,7 +6,7 @@ try {
     await conexao.authenticate();
     console.log('Banco de Dados Conectado!');
 } catch (error) {
-    console.log('Erro ao conectar no banco de dados');
+    console.log('Erro ao conectar no banco de dados!');
     console.log(error);
 }
 
