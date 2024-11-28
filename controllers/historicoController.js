@@ -9,7 +9,7 @@ const historico = async (req, res) => {
             include: [
                 {
                     model: Epi,
-                    attributes: ['nome']
+                    attributes: ['nome', 'quantidade']
                 },
                 {
                     model: Funcionario,
