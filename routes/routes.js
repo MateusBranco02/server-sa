@@ -1,6 +1,6 @@
 import express from 'express';
-import { cadastrarEpi, mostrarEpis, editarEpi, removerEpi, retirarEpi, devolverEpi } from '../controllers/epiController.js';
-import { cadastrarFuncionario, mostrarFuncionarios, editarFuncionario, removerFuncionario } from '../controllers/funcionarioController.js';
+import { cadastrarEpi, mostrarEpis, editarEpi, removerEpi, retirarEpi, devolverEpi, mostrarEpiPeloId } from '../controllers/epiController.js';
+import { cadastrarFuncionario, mostrarFuncionarios, editarFuncionario, removerFuncionario, mostrarFuncionarioPeloId } from '../controllers/funcionarioController.js';
 import { opcoesDeStatus } from '../controllers/statusController.js';
 import { historico } from '../controllers/historicoController.js';
 
@@ -10,6 +10,8 @@ router.get('/epis', mostrarEpis);
 router.get('/funcionarios', mostrarFuncionarios);
 router.get('/status', opcoesDeStatus);
 router.get('/historico', historico);
+router.get('/epi/:id', mostrarEpiPeloId);
+router.get('/funcionario/:id', mostrarFuncionarioPeloId);
 
 router.post('/cadastrar-epi', cadastrarEpi);
 router.post('/cadastrar-funcionario', cadastrarFuncionario);

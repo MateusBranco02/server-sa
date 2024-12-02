@@ -6,7 +6,18 @@ const mostrarEpis = async (req, res) => {
         res.status(200).send({ resultado: response });
     } catch (error) {
         console.log(error);
-        res.status(500).send({ mensagem: 'Erro Interno!' });
+        res.status(500).send({ mensagem: 'Erro interno!' });
+    }
+}
+
+const mostrarEpiPeloId = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const response = await Epi.findByPk(id);
+        res.status(200).send({ resultado: response });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ mensagem: 'Erro interno!' });
     }
 }
 
@@ -23,13 +34,14 @@ const cadastrarEpi = async (req, res) => {
 
 const editarEpi = async (req, res) => {
     try {
-        const id = Number(req.params.id);
+        const id = req.params.id;
         const { nome, quantidade, imagem } = req.body;
+
         const response = await Epi.update({ nome, quantidade, imagem }, { where: { id } });
-        res.status(200).send({ mensagem: 'Dados alterados com sucesso!' });
+        res.status(200).send({ mensagem: 'Informações alteradas com sucesso!' });
     } catch (error) {
         console.log(error);
-        res.status(500).send({ mensagem: 'Erro ao editar!' });
+        res.status(500).send({ mensagem: 'Erro interno!' });
     }
 }
 
@@ -65,9 +77,10 @@ const retirarEpi = async (req, res) => {
         res.status(201).send({ resultado: response });
     } catch (error) {
         console.log(error);
-        res.status(500).send({ mensagem: 'Erro ao tentar retirar o EPI!' });
+        res.status(500).send({ mensagem: 'Erro interno!' });
     }
 }
+
 
 const devolverEpi = async (req, res) => {
     try {
@@ -110,8 +123,8 @@ const devolverEpi = async (req, res) => {
         res.status(201).send({ resultado: response });
     } catch (error) {
         console.log(error);
-        res.status(500).send({ mensagem: 'Erro ao tentar devolver o EPI!' });
+        res.status(500).send({ mensagem: 'Erro interno!' });
     }
 }
 
-export { mostrarEpis, cadastrarEpi, editarEpi, removerEpi, retirarEpi, devolverEpi };
+export { mostrarEpis, mostrarEpiPeloId, cadastrarEpi, editarEpi, removerEpi, retirarEpi, devolverEpi };
