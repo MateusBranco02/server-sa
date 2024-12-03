@@ -21,10 +21,14 @@ const mostrarFuncionarioPeloId = async (req, res) => {
     }
 }
 
-
 const cadastrarFuncionario = async (req, res) => {
     try {
         const { nome, funcao, telefone, email, cpf } = req.body;
+
+        if (!nome || !funcao || !telefone || !email || !cpf) {
+            return res.status(400).send({ mensagem: 'Todos os campos são obrigatórios!' });
+        }
+
         const response = await Funcionario.create({ nome, funcao, telefone, email, cpf });
         res.status(201).send({ resultado: response });
     } catch (error) {
@@ -57,4 +61,20 @@ const removerFuncionario = async (req, res) => {
     }
 }
 
-export { mostrarFuncionarios, mostrarFuncionarioPeloId, cadastrarFuncionario, editarFuncionario, removerFuncionario };
+const validarCpf = async (req, res) => {
+    try {
+        const { cpf } = req.body;
+        const funcionario = await Funcionario.findByPk(req.params.id);
+
+        if (!funcionario || funcionario.cpf !== cpf) {
+            return res.status(401).send({ mensagem: 'CPF inválido!' });
+        }
+
+        res.status(200).send({ mensagem: 'CPF validado com sucesso!' });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ mensagem: 'Erro Interno!' });
+    }
+}
+
+export { mostrarFuncionarios, mostrarFuncionarioPeloId, cadastrarFuncionario, editarFuncionario, removerFuncionario, validarCpf };
