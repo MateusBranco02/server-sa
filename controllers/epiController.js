@@ -59,16 +59,34 @@ const removerEpi = async (req, res) => {
 const retirarEpi = async (req, res) => {
     try {
         const id = req.params.id;
-        const { nome, quantidade } = req.body;
+        const { cpf, quantidade } = req.body;
 
-        const verificarNomeFuncionario = await Funcionario.findOne({ where: { nome: nome } });
+        if (!cpf || !quantidade) {
+            return res.status(400).send({ mensagem: 'Todos os campos são obrigatórios!' });
+        }
+
+        const verificarCpfFuncionario = await Funcionario.findOne({ where: { cpf: cpf } });
+        if (!verificarCpfFuncionario) {
+            return res.status(404).send({ mensagem: 'Funcionário não encontrado!' });
+        }
 
         const pegarIdEpi = await Epi.findByPk(id);
+        if (!pegarIdEpi) {
+            return res.status(404).send({ mensagem: 'EPI não encontrado!' });
+        }
 
-        const atualizarQuantidadeEpi = await pegarIdEpi.update({ quantidade: Number(pegarIdEpi.quantidade) - Number(quantidade) });
+        if (Number(quantidade) <= 0) {
+            return res.status(400).send({ mensagem: 'A quantidade deve ser maior que zero!' });
+        }
+
+        if (Number(quantidade) > pegarIdEpi.quantidade) {
+            return res.status(400).send({ mensagem: `Estoque insuficiente! Disponível: ${pegarIdEpi.quantidade}` });
+        }
+
+        await pegarIdEpi.update({ quantidade: Number(pegarIdEpi.quantidade) - Number(quantidade) });
 
         const response = await Historico.create({
-            idFuncionario: verificarNomeFuncionario.id,
+            idFuncionario: verificarCpfFuncionario.id,
             idEpi: pegarIdEpi.id,
             idStatus: 1,
             quantidade
@@ -81,14 +99,17 @@ const retirarEpi = async (req, res) => {
     }
 }
 
-
 const devolverEpi = async (req, res) => {
     try {
         const id = req.params.id;
-        const { nome, quantidade } = req.body;
+        const { cpf, quantidade } = req.body;
 
-        const verificarNomeFuncionario = await Funcionario.findOne({ where: { nome: nome } });
-        if (!verificarNomeFuncionario) {
+        if (!cpf || !quantidade) {
+            return res.status(400).send({ mensagem: 'Todos os campos são obrigatórios!' });
+        }
+
+        const verificarCpfFuncionario = await Funcionario.findOne({ where: { cpf: cpf } });
+        if (!verificarCpfFuncionario) {
             return res.status(404).send({ mensagem: 'Funcionário não encontrado!' });
         }
 
@@ -97,9 +118,9 @@ const devolverEpi = async (req, res) => {
             return res.status(404).send({ mensagem: 'EPI não encontrado!' });
         }
 
-        const totalRetirado = await Historico.sum('quantidade', { where: { idFuncionario: verificarNomeFuncionario.id, idEpi: pegarIdEpi.id, idStatus: 1 } });
+        const totalRetirado = await Historico.sum('quantidade', { where: { idFuncionario: verificarCpfFuncionario.id, idEpi: pegarIdEpi.id, idStatus: 1 } });
 
-        const totalDevolvido = await Historico.sum('quantidade', { where: { idFuncionario: verificarNomeFuncionario.id, idEpi: pegarIdEpi.id, idStatus: 2 } });
+        const totalDevolvido = await Historico.sum('quantidade', { where: { idFuncionario: verificarCpfFuncionario.id, idEpi: pegarIdEpi.id, idStatus: 2 } });
 
         const disponivelParaDevolucao = totalRetirado - totalDevolvido;
 
@@ -108,13 +129,13 @@ const devolverEpi = async (req, res) => {
         }
 
         if (quantidade > disponivelParaDevolucao) {
-            return res.status(400).send({ mensagem: 'Quantidade devolvida excede o que foi retirado!' });
+            return res.status(400).send({ mensagem: `Quantidade devolvida "${quantidade}" excede o limite disponível para devolução "${disponivelParaDevolucao}"!` });
         }
 
         const atualizarQuantidadeEpi = await pegarIdEpi.update({ quantidade: Number(pegarIdEpi.quantidade) + Number(quantidade) });
 
         const response = await Historico.create({
-            idFuncionario: verificarNomeFuncionario.id,
+            idFuncionario: verificarCpfFuncionario.id,
             idEpi: pegarIdEpi.id,
             idStatus: 2,
             quantidade

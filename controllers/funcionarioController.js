@@ -61,20 +61,4 @@ const removerFuncionario = async (req, res) => {
     }
 }
 
-const validarCpf = async (req, res) => {
-    try {
-        const { cpf } = req.body;
-        const funcionario = await Funcionario.findByPk(req.params.id);
-
-        if (!funcionario || funcionario.cpf !== cpf) {
-            return res.status(401).send({ mensagem: 'CPF inválido!' });
-        }
-
-        res.status(200).send({ mensagem: 'CPF validado com sucesso!' });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({ mensagem: 'Erro Interno!' });
-    }
-}
-
-export { mostrarFuncionarios, mostrarFuncionarioPeloId, cadastrarFuncionario, editarFuncionario, removerFuncionario, validarCpf };
+export { mostrarFuncionarios, mostrarFuncionarioPeloId, cadastrarFuncionario, editarFuncionario, removerFuncionario };
