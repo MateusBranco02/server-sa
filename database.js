@@ -1,6 +1,9 @@
 import { Sequelize } from 'sequelize';
 
-const conexao = new Sequelize('postgresql://mateus:ZCQweZsNHvSqn8kbhOTYaQ@brainy-boar-3152.j77.aws-us-east-1.cockroachlabs.cloud:26257/db_sa?sslmode=verify-full');
+const conexao = new Sequelize(process.env.DATABASE_URL, {
+    dialect: 'postgres',
+    logging: false,
+});
 
 try {
     await conexao.authenticate();
