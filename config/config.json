@@ -1,23 +1,23 @@
 {
   "development": {
-    "username": "root",
-    "password": null,
-    "database": "database_development",
+    "username": "mateus",
+    "password": "ZCQweZsNHvSqn8kbhOTYaQ",
+    "database": "db_sa",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "postgresql"
   },
   "test": {
-    "username": "root",
-    "password": null,
-    "database": "database_test",
+    "username": "mateus",
+    "password": "ZCQweZsNHvSqn8kbhOTYaQ",
+    "database": "db_sa",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "postgresql"
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
+    "username": "mateus",
+    "password": "ZCQweZsNHvSqn8kbhOTYaQ",
+    "database": "db_sa",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "postgresql"
   }
 }
