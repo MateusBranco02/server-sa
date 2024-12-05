@@ -29,6 +29,16 @@ const cadastrarFuncionario = async (req, res) => {
             return res.status(400).send({ mensagem: 'Todos os campos são obrigatórios!' });
         }
 
+        const funcionarioExistente = await Funcionario.findOne({ where: { cpf } });
+        if (funcionarioExistente) {
+            return res.status(400).send({ mensagem: 'CPF já cadastrado!' });
+        }
+
+        const emailExistente = await Funcionario.findOne({ where: { email } });
+        if (emailExistente) {
+            return res.status(400).send({ mensagem: 'E-mail já cadastrado!' });
+        }
+
         const response = await Funcionario.create({ nome, funcao, telefone, email, cpf });
         res.status(201).send({ resultado: response });
     } catch (error) {

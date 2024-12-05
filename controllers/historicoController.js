@@ -19,6 +19,11 @@ const historico = async (req, res) => {
             ],
             attributes: ['quantidade', 'createdAt', 'updatedAt']
         });
+
+        if (response.length === 0) {
+            return res.status(200).send({ mensagem: 'Nenhum registro encontrado.' });
+        }
+
         res.status(200).send({ resultado: response });
     } catch (error) {
         console.log(error);
