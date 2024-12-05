@@ -1,19 +1,6 @@
 import { Sequelize } from 'sequelize';
 
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const conexao = new Sequelize(process.env.DATABASE_URL, {
-    dialect: 'postgres',
-    dialectOptions: {
-        ssl: {
-            require: true,
-            rejectUnauthorized: false, // Aceita conexões com certificados SSL não verificados
-        },
-    },
-    logging: false,
-});
+const conexao = new Sequelize('postgresql://mateus:ZCQweZsNHvSqn8kbhOTYaQ@brainy-boar-3152.j77.aws-us-east-1.cockroachlabs.cloud:26257/db_sa?sslmode=verify-full');
 
 try {
     await conexao.authenticate();
